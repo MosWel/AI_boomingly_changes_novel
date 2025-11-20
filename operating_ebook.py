@@ -6,19 +6,20 @@ from ebooklib import epub
 from ebooklib.epub import EpubHtml
 
 # 操作函数
-def get_chapter_data(chapter_index=0):
+def get_chapter_data(chapter_index=0, ebook=epub.read_epub(Env.DATA_PATH)):
     """
     读取EPUB文件中指定章节的数据
     
     Args:
         chapter_index (int): 章节索引，默认为0（第一个章节）
+        ebook (EpubBook): 操作指向的目标电子书
     
     Returns:
         dict: 包含章节信息的字典，包括标题、内容、ID等
     """
     try:
         # 读取EPUB文件
-        book = epub.read_epub(Env.DATA_PATH)
+        book = ebook
         
         # 获取所有文档项（HTML文件）
         items = list(book.get_items_of_type(ebooklib.ITEM_DOCUMENT))
@@ -49,15 +50,18 @@ def get_chapter_data(chapter_index=0):
         print(f"读取章节数据时发生错误: {e}")
         return None
 
-def get_all_chapters():
+def get_all_chapters(ebook=epub.read_epub(Env.DATA_PATH)):
     """
     获取EPUB文件中所有章节的信息
+
+    Args:
+        ebook (EpubBook): 操作指向的目标电子书
     
     Returns:
         list: 包含所有章节信息的列表
     """
     try:
-        book = epub.read_epub(Env.DATA_PATH)
+        book = ebook
         items = list(book.get_items_of_type(ebooklib.ITEM_DOCUMENT))
         chapters = []
         
@@ -76,21 +80,22 @@ def get_all_chapters():
     except Exception as e:
         print(f"获取所有章节时发生错误: {e}")
         return []
-    
-def update_chapter_content(chapter_index, new_content, replace=False):
+
+def update_chapter_content(chapter_index, new_content, ebook=epub.read_epub(Env.DATA_PATH)):
     """
-    更新指定章节的内容并保存回EPUB文件
+    更新电子书的指定章节的内容并返回EpubBook对象
     
     Args:
         chapter_index (int): 要更新的章节索引
         new_content (str): 新的章节内容（HTML格式）
+        ebook (EpubBook): 操作指向的目标电子书
     
     Returns:
-        bool: 更新是否成功
+        book: 更新后的电子书
     """
     try:
         # 读取原始EPUB文件
-        book = epub.read_epub(Env.DATA_PATH)
+        book = ebook
         items = list(book.get_items_of_type(ebooklib.ITEM_DOCUMENT))
         
         if chapter_index >= len(items):
@@ -111,25 +116,19 @@ def update_chapter_content(chapter_index, new_content, replace=False):
             # 替换原章节
             book.items.remove(original_chapter)
             book.items.append(new_chapter)
-            
-        # 保存修改后的EPUB文件
-        if replace:
-            output_path = Env.DATA_PATH
-            epub.write_epub(output_path, book)
-            print(f"修改后的文件已保存至: {output_path}")
         
-        return True
+        return book
         
     except Exception as e:
         print(f"更新章节内容时发生错误: {e}")
-        return False
+        return None
 
 # 示例使用
 if __name__ == "__main__":
     # 获取第一个章节的数据
-    chapter_data = get_chapter_data(0)
-    if chapter_data:
-        print(f"章节标题: {chapter_data['title']}")
+    # chapter_data = get_chapter_data(0)
+    # if chapter_data:
+        # print(f"章节标题: {chapter_data['title']}")
         # print(f"章节内容预览: {chapter_data['content'][:200]}...")
     
     # 获取所有章节
@@ -138,6 +137,8 @@ if __name__ == "__main__":
     
     # 更新章节内容示例
     # new_content = "<h1>修改后的标题</h1><p>这是修改后的内容。</p>"
+    # ebook = update_chapter_content(0, new_content)
+    # print(get_chapter_data(0, ebook=ebook)['content'])
+    # print(get_chapter_data(0)['content'])
 
-    # update_chapter_content(0, new_content)
-
+    pass
