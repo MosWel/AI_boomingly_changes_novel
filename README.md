@@ -7,8 +7,8 @@
 <br>$\cdot$文章的关键信息主要分为所有'人物'和所有'场景'及两者的组合'故事'，进一步地讲，我们可以把'文章'等价于不同'人物'在其相应'场景'下发生的'故事'的有序组合。</br>
 <br>$\cdot$该观点支撑着作者对于文章的重构工作，具体来讲，重构工作主要是把'文章'润色一遍。但是，为了更加与上下章节连贯和更方便提供插图，我们将重构工作分为先划分、再重构两部分。首先划分出这个'故事'的有序组合提供给AI逐个润色并利用相应信息生成图片，然后再让AI按照特定方式组合起来</br>
 <br>$\cdot$为了方便给Novel AI更准确的描述提示词，我划分了两组需要用到的信息：</br>
-<br>$\cdot\cdot$1.人物形象{role_style}（包括性别{gender}、角色身份与性质{identity}、身体特征{ps_feature}、服装与配饰{clothing}、动作与表情{act_an_exprs}）;</br>
-<br>$\cdot\cdot$2.图片风格{photo_style}（包括喜好的艺术家的画风{artist_style}、环境场景{envir}、角色数量{role_number}、光影与视角{LSandP}、整体风格{complete_style}）。</br>
+<br>$\cdot$ 1.人物形象{role_style}（包括性别{gender}、角色身份与性质{identity}、身体特征{ps_feature}、服装与配饰{clothing}、动作与表情{act_an_exprs}）;</br>
+<br>$\cdot$ 2.图片风格{photo_style}（包括喜好的艺术家的画风{artist_style}、环境场景{envir}、角色数量{role_number}、光影与视角{LSandP}、整体风格{complete_style}）。</br>
 <br>这里面我们要从章节中获取到的关键信息包括：每一个角色的人物形象{role_style}和每个场景下除了喜好的艺术家的画风{artist_style}之外的图片风格{photo_style}</br>
 ## 2025/11/20 目前为止的更新计划与完成的任务
 ### 完成的任务
