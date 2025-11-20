@@ -6,9 +6,9 @@ from rich.console import Console
 from rich.markdown import Markdown
 import os
 
-# 环境参数
-key="f10f8ab6-dda5-4649-8698-2e214297a34f"
-url="https://ark.cn-beijing.volces.com/api/v3"
+# 环境参数，下方使用的火山引擎
+key=YOUR_API_KEY
+url=YOUR_BASE_URL
 model="doubao-1-5-pro-32k-character-250715"
 
 # 创建智能体类，实现与OpenAI模型的交互
@@ -40,4 +40,5 @@ class AIUESAgent:
             temperature=temperature,
             max_tokens=max_tokens
         )
+
         return response.choices[0].message.content
