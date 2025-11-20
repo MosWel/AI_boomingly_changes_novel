@@ -114,7 +114,7 @@ def update_chapter_content(chapter_index, new_content, replace=False):
             
         # 保存修改后的EPUB文件
         if replace:
-            output_path = Env.DATA_PATH.replace(Env.DATA_PATH / '_modified.epub')
+            output_path = Env.DATA_PATH
             epub.write_epub(output_path, book)
             print(f"修改后的文件已保存至: {output_path}")
         
@@ -140,3 +140,4 @@ if __name__ == "__main__":
     # new_content = "<h1>修改后的标题</h1><p>这是修改后的内容。</p>"
 
     # update_chapter_content(0, new_content)
+
