@@ -10,6 +10,7 @@ from bs4 import BeautifulSoup
 import re
 import AIUESAGENT as AT
 from pathlib import Path
+import Env
 
 # 参数设置
 DATA_PATH = 'data/cost_data.xlsx'
@@ -158,7 +159,7 @@ def save_report_to_html(report, title, tables):
         {df_html_1}
 
         <h3>{section4_title}</h3>
-        <p>{section4_content}</p>
+        <p><br>{section4_content}</br></p>
         {df_html_2}
     </body>
     </html>
@@ -167,7 +168,7 @@ def save_report_to_html(report, title, tables):
         f.write(html)
 
 # %%
-def analyze_and_generate_report(df, year, month):
+def analyze_and_generate_report(df, year, month, model):
     """
     分析指定年月的消费数据并生成详细报告
     
@@ -255,7 +256,7 @@ def analyze_and_generate_report(df, year, month):
 
     # 生成报告文本与图片
     report_lines = []
-    system_prompt = '''你是一名数据分析专家，请根据提供的数据，生成一段消费报告，要求字数不超过500字。'''
+    system_prompt = '''你是一名数据分析专家，请根据提供的数据，生成一段消费报告，并且提供具体的省钱建议，要求字数不超过500字。要求：输出格式控制为html的p组件格式'''
     report_text = '一、总体概况'
 
     # 第一部分的文字内容
@@ -370,7 +371,13 @@ def analyze_and_generate_report(df, year, month):
                   )
               )
               .set_global_opts(title_opts=opts.TitleOpts(title="每日收支流水"),
-                               yaxis_opts=opts.AxisOpts(axislabel_opts=opts.LabelOpts(formatter="{value} 元"))) 
+                               yaxis_opts=opts.AxisOpts(
+                                   name='支出',
+                                   type_='value',  
+                                   position='left',
+                                   axislabel_opts=opts.AxisLineOpts(
+                                       linestyle_opts=opts.LineStyleOpts(color="#009DFF"))
+                                   ))
               .overlap(charts.Line()
                        .add_xaxis(list(daily_expense.keys()))
                        .add_yaxis('每日支出', list(daily_expense.values()),
@@ -383,7 +390,7 @@ def analyze_and_generate_report(df, year, month):
 
     # 添加数据详情
     report_lines.append("<title 4>四、详细消费记录")
-    report_lines.append("<br>"+AT.AIUESAgent().get_response(report_text, system_prompt)+"</br>")
+    report_lines.append(AT.AIUESAgent(model=model).get_response(report_text, system_prompt))
     report_lines.append('')
     
     report = "\n".join(report_lines)
@@ -392,7 +399,7 @@ def analyze_and_generate_report(df, year, month):
     # print(report_text)
 
     # 保存报告至 html 文件
-    save_report_to_html(report, f"{year}年{month}月消费报告.html", [df_info, monthly_data])
+    save_report_to_html(report, f"cost_report/{year}年{month}月消费报告.html", [df_info, monthly_data])
     
     # 返回结构化结果
     return {
@@ -411,11 +418,16 @@ def analyze_and_generate_report(df, year, month):
 if __name__ == "__main__":
     # 示例调用
     df = proc_washing_data(DATA_PATH)
-    target_year = 2025 # 2025年
-    target_month = 11  # 11月
+
+    # 输入要查询的信息（）如下
+    target_year = int(input('请输入要查询的年份：'))
+    target_month = int(input('请输入要查询的月份：'))
+    MODEL = Env.DOUBAO
+    if input('是否使用推理模型？(y/n)') == 'y':
+        MODEL = Env.DOUBAO_THINK
 
     result = extract_monthly_expenses(df, target_year, target_month)
 
-    analyze_and_generate_report(df, target_year, target_month)['report']
+    analyze_and_generate_report(df, target_year, target_month, MODEL)['report']
 
 
